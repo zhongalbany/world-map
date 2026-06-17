@@ -42,6 +42,7 @@ input {
 }
 
 button {
+  min-width: 90px;
   min-height: 44px;
   border: 1px solid #b9c4bf;
   border-radius: 8px;
@@ -57,10 +58,16 @@ button {
   margin: 0 auto;
   padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
     max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-  display: grid;
-  grid-template-rows: auto auto minmax(0, auto) auto;
+  display: flex;
+  flex-direction: column;
   gap: var(--shell-gap, 8px);
   overflow: hidden;
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .topbar {
@@ -86,12 +93,14 @@ h1 {
 }
 
 .scoreboard {
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
 .mode-panel {
+  flex: 0 0 auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 253, 247, 0.94);
@@ -187,6 +196,7 @@ h1 {
 }
 
 .map-panel {
+  flex: 1 1 auto;
   position: relative;
   aspect-ratio: 2 / 1;
   width: min(100%, calc(var(--map-height, 42vh) * 2));
@@ -197,21 +207,30 @@ h1 {
   border: 1px solid #adc5c7;
   border-radius: 8px;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)),
     var(--sea);
   box-shadow: 0 12px 30px rgba(31, 74, 76, 0.12);
 }
 
+.map-area {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .map-tools {
-  position: absolute;
-  z-index: 3;
-  top: 10px;
-  right: 10px;
+  position: static;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 6px;
+  padding: 6px;
+  background: rgba(255, 253, 247, 0.78);
+  border-bottom: 1px solid rgba(70, 100, 100, 0.18);
 }
 
 .icon-button {
@@ -316,12 +335,17 @@ h1 {
 }
 
 .guess-panel {
+  flex: 0 0 auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 253, 247, 0.94);
   padding: 10px;
   display: grid;
   gap: 8px;
+}
+
+.controls {
+  flex: 0 0 auto;
 }
 
 .guess-panel label {
@@ -356,7 +380,7 @@ button:focus-visible {
 }
 
 #submitButton {
-  min-width: 84px;
+  min-width: 90px;
   padding: 0 16px;
   background: #1d4f5c;
   border-color: #173f49;
@@ -385,10 +409,18 @@ button:focus-visible {
 }
 
 .feedback {
-  min-height: 20px;
+  min-height: 2.5em;
+  line-height: 1.25;
   margin: 0;
   color: var(--muted);
   font-weight: 750;
+  display: flex;
+  align-items: center;
+}
+
+.status-message {
+  min-height: 2.5em;
+  line-height: 1.25;
 }
 
 .feedback.good {
@@ -400,12 +432,15 @@ button:focus-visible {
 }
 
 .actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .actions button {
+  flex: 1 1 130px;
+  min-width: 90px;
+  min-height: 44px;
   padding: 0 12px;
   font-weight: 800;
 }
@@ -415,7 +450,6 @@ button:focus-visible {
 }
 
 .primary-action {
-  grid-column: 1 / -1;
   background: #1d4f5c;
   border-color: #173f49;
   color: #fff;
@@ -423,14 +457,20 @@ button:focus-visible {
 }
 
 .secondary-action {
-  grid-column: 1 / -1;
+  flex-basis: 100%;
+}
+
+.actions #nextButton {
+  flex-basis: 100%;
+}
+
+.actions #nextButton[hidden] {
+  display: block !important;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 @media (max-width: 680px) {
-  .app-shell {
-    grid-template-rows: auto auto minmax(0, auto) auto;
-  }
-
   .mode-panel,
   .mode-options {
     grid-template-columns: 1fr;
@@ -464,18 +504,11 @@ button:focus-visible {
 
 @media (orientation: landscape) and (max-height: 520px) {
   .app-shell {
-    grid-template-columns: minmax(280px, 1fr) minmax(260px, 360px);
-    grid-template-rows: auto auto 1fr;
     align-items: stretch;
   }
 
-  .topbar,
-  .scoreboard {
-    grid-column: 1 / -1;
-  }
-
   .guess-panel {
-    align-self: stretch;
+    align-self: auto;
   }
 }
 
@@ -509,7 +542,6 @@ button:focus-visible {
   }
 
   .feedback {
-    min-height: 18px;
     font-size: 0.9rem;
   }
 }

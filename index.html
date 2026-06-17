@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <main class="app-shell">
+    <main class="app-shell app">
       <header class="topbar">
         <div>
           <p class="eyebrow">World relief map</p>
@@ -49,7 +49,7 @@
         <div><span id="streakCount">0</span><small>Streak</small></div>
       </section>
 
-      <section class="map-panel game-surface" aria-label="World map" hidden>
+      <section class="map-panel map-area game-surface" aria-label="World map" hidden>
         <div class="map-tools">
           <button id="zoomOutButton" class="icon-button" type="button" aria-label="Zoom out" title="Zoom out">−</button>
           <button id="zoomResetButton" class="world-button" type="button" aria-label="Reset World View" title="Reset World View">
@@ -67,7 +67,7 @@
         ></svg>
       </section>
 
-      <form id="guessForm" class="guess-panel game-surface" autocomplete="off" hidden>
+      <form id="guessForm" class="guess-panel controls game-surface" autocomplete="off" hidden>
         <label for="guessInput">Country name</label>
         <div class="input-row">
           <input
@@ -84,7 +84,7 @@
           <button id="submitButton" type="submit">Guess</button>
         </div>
         <div id="hintList" class="hints" role="listbox" aria-label="Country suggestions"></div>
-        <p id="feedback" class="feedback" aria-live="polite"></p>
+        <p id="feedback" class="feedback status-message" aria-live="polite"></p>
         <div class="actions">
           <button id="skipButton" type="button">Skip</button>
           <button id="revealButton" type="button">Reveal Answer</button>
