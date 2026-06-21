@@ -355,6 +355,7 @@ function setCurrent(country) {
   waitingForNext = false;
   guessInput.value = "";
   hintList.innerHTML = "";
+  guessForm.scrollTop = 0;
   setFeedback("Find the highlighted country.");
   setAnswerControlsEnabled(true);
   nextButton.hidden = true;
@@ -370,7 +371,6 @@ function setCurrent(country) {
   if (activePath) countryLayer.append(activePath);
   fitLayout();
   zoomToCountry(country, true);
-  guessInput.focus({ preventScroll: true });
 }
 
 function nextCountry() {
@@ -474,7 +474,6 @@ function waitForNext() {
   hintList.innerHTML = "";
   setAnswerControlsEnabled(false);
   nextButton.hidden = false;
-  nextButton.focus({ preventScroll: true });
 }
 
 function setAnswerControlsEnabled(enabled) {
@@ -587,7 +586,6 @@ function updateHints() {
     button.addEventListener("click", () => {
       guessInput.value = name;
       updateHints();
-      guessInput.focus({ preventScroll: true });
     });
     hintList.append(button);
   });
@@ -725,7 +723,7 @@ function zoomToCountry(country, animate = true) {
 function fitLayout() {
   const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
   if (window.matchMedia("(max-width: 700px)").matches) {
-    appShell.style.setProperty("--map-height", `${Math.floor(viewportHeight * 0.52)}px`);
+    appShell.style.setProperty("--map-height", `${Math.floor(viewportHeight * 0.7)}px`);
     return;
   }
   const shellStyles = getComputedStyle(appShell);
