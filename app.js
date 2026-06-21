@@ -16,11 +16,229 @@ const zoomResetButton = document.querySelector("#zoomResetButton");
 const terrainToggleButton = document.querySelector("#terrainToggleButton");
 const modePanel = document.querySelector("#modePanel");
 const startButton = document.querySelector("#startButton");
+const continentSelect = document.querySelector("#continentSelect");
+const labelSizeSelect = document.querySelector("#labelSizeSelect");
 const gameSurfaces = document.querySelectorAll(".game-surface");
 const appShell = document.querySelector(".app-shell");
 const mapPanel = document.querySelector(".map-panel");
 const scoreboard = document.querySelector(".scoreboard");
 const topbar = document.querySelector(".topbar");
+
+const CONTINENT_NAMES = {
+  world: "World",
+  africa: "Africa",
+  asia: "Asia",
+  europe: "Europe",
+  "north-america": "North America",
+  "south-america": "South America",
+  oceania: "Oceania",
+};
+
+const COUNTRY_CONTINENTS = {
+  afghanistan: "asia",
+  albania: "europe",
+  algeria: "africa",
+  angola: "africa",
+  argentina: "south-america",
+  armenia: "asia",
+  australia: "oceania",
+  austria: "europe",
+  azerbaijan: "asia",
+  bangladesh: "asia",
+  belarus: "europe",
+  belgium: "europe",
+  belize: "north-america",
+  benin: "africa",
+  bhutan: "asia",
+  bolivia: "south-america",
+  "bosnia-and-herzegovina": "europe",
+  botswana: "africa",
+  brazil: "south-america",
+  brunei: "asia",
+  bulgaria: "europe",
+  "burkina-faso": "africa",
+  burundi: "africa",
+  cambodia: "asia",
+  cameroon: "africa",
+  canada: "north-america",
+  "central-african-republic": "africa",
+  chad: "africa",
+  chile: "south-america",
+  colombia: "south-america",
+  "costa-rica": "north-america",
+  croatia: "europe",
+  cuba: "north-america",
+  cyprus: "europe",
+  czechia: "europe",
+  "democratic-republic-of-the-congo": "africa",
+  denmark: "europe",
+  djibouti: "africa",
+  "dominican-republic": "north-america",
+  "east-timor": "asia",
+  ecuador: "south-america",
+  egypt: "africa",
+  "el-salvador": "north-america",
+  "equatorial-guinea": "africa",
+  eritrea: "africa",
+  estonia: "europe",
+  eswatini: "africa",
+  ethiopia: "africa",
+  fiji: "oceania",
+  finland: "europe",
+  france: "europe",
+  gabon: "africa",
+  georgia: "asia",
+  germany: "europe",
+  ghana: "africa",
+  greece: "europe",
+  greenland: "north-america",
+  guatemala: "north-america",
+  guinea: "africa",
+  "guinea-bissau": "africa",
+  guyana: "south-america",
+  haiti: "north-america",
+  honduras: "north-america",
+  hungary: "europe",
+  iceland: "europe",
+  india: "asia",
+  indonesia: "asia",
+  iran: "asia",
+  iraq: "asia",
+  ireland: "europe",
+  italy: "europe",
+  "ivory-coast": "africa",
+  jamaica: "north-america",
+  japan: "asia",
+  jordan: "asia",
+  kazakhstan: "asia",
+  kenya: "africa",
+  kuwait: "asia",
+  kyrgyzstan: "asia",
+  laos: "asia",
+  latvia: "europe",
+  lebanon: "asia",
+  lesotho: "africa",
+  liberia: "africa",
+  libya: "africa",
+  lithuania: "europe",
+  luxembourg: "europe",
+  madagascar: "africa",
+  malawi: "africa",
+  malaysia: "asia",
+  mali: "africa",
+  mauritania: "africa",
+  mexico: "north-america",
+  moldova: "europe",
+  mongolia: "asia",
+  montenegro: "europe",
+  morocco: "africa",
+  mozambique: "africa",
+  myanmar: "asia",
+  namibia: "africa",
+  nepal: "asia",
+  netherlands: "europe",
+  "new-zealand": "oceania",
+  nicaragua: "north-america",
+  niger: "africa",
+  nigeria: "africa",
+  "north-korea": "asia",
+  "north-macedonia": "europe",
+  norway: "europe",
+  oman: "asia",
+  pakistan: "asia",
+  panama: "north-america",
+  "papua-new-guinea": "oceania",
+  paraguay: "south-america",
+  "people-s-republic-of-china": "asia",
+  peru: "south-america",
+  philippines: "asia",
+  poland: "europe",
+  portugal: "europe",
+  qatar: "asia",
+  "republic-of-the-congo": "africa",
+  romania: "europe",
+  russia: "europe",
+  rwanda: "africa",
+  "saudi-arabia": "asia",
+  senegal: "africa",
+  serbia: "europe",
+  "sierra-leone": "africa",
+  slovakia: "europe",
+  slovenia: "europe",
+  "solomon-islands": "oceania",
+  somalia: "africa",
+  somaliland: "africa",
+  "south-africa": "africa",
+  "south-korea": "asia",
+  "south-sudan": "africa",
+  spain: "europe",
+  "sri-lanka": "asia",
+  sudan: "africa",
+  suriname: "south-america",
+  sweden: "europe",
+  switzerland: "europe",
+  syria: "asia",
+  taiwan: "asia",
+  tajikistan: "asia",
+  tanzania: "africa",
+  thailand: "asia",
+  "the-bahamas": "north-america",
+  "the-gambia": "africa",
+  togo: "africa",
+  "trinidad-and-tobago": "north-america",
+  tunisia: "africa",
+  turkey: "asia",
+  "turkish-republic-of-northern-cyprus": "europe",
+  turkmenistan: "asia",
+  uganda: "africa",
+  ukraine: "europe",
+  "united-arab-emirates": "asia",
+  "united-kingdom": "europe",
+  "united-states": "north-america",
+  uruguay: "south-america",
+  uzbekistan: "asia",
+  vanuatu: "oceania",
+  venezuela: "south-america",
+  vietnam: "asia",
+  yemen: "asia",
+  zambia: "africa",
+  zimbabwe: "africa",
+};
+
+const LABEL_ABBREVIATIONS = {
+  "bosnia-and-herzegovina": "Bosnia & Herz.",
+  "central-african-republic": "Central African Rep.",
+  "democratic-republic-of-the-congo": "Dem. Rep. Congo",
+  "dominican-republic": "Dominican Rep.",
+  "equatorial-guinea": "Eq. Guinea",
+  "guinea-bissau": "Guinea-Bissau",
+  "north-macedonia": "N. Macedonia",
+  "papua-new-guinea": "Papua N.G.",
+  "people-s-republic-of-china": "China",
+  "republic-of-the-congo": "Congo",
+  "saudi-arabia": "Saudi Arabia",
+  "sierra-leone": "Sierra Leone",
+  "solomon-islands": "Solomon Is.",
+  "south-africa": "South Africa",
+  "south-korea": "South Korea",
+  "south-sudan": "South Sudan",
+  "trinidad-and-tobago": "Trinidad & Tobago",
+  "turkish-republic-of-northern-cyprus": "N. Cyprus",
+  "united-arab-emirates": "U.A.E.",
+  "united-kingdom": "United Kingdom",
+  "united-states": "United States",
+};
+
+const LEADER_LABEL_COUNTRIES = new Set([
+  "bahrain",
+  "brunei",
+  "kuwait",
+  "lebanon",
+  "luxembourg",
+  "malta",
+  "qatar",
+  "singapore",
+]);
 
 const score = {
   correct: 0,
@@ -40,6 +258,9 @@ let drag = null;
 let advanceTimer = null;
 let viewAnimation = null;
 let gameMode = "label";
+let labelSize = "small";
+let selectedContinent = "world";
+let activeCountries = data.countries;
 let gameStarted = false;
 let completedIds = new Set();
 let waitingForNext = false;
@@ -65,6 +286,11 @@ function shuffle(list) {
 
 function countryAnswers(country) {
   return new Set([country.name, ...country.aliases].map(normalize));
+}
+
+function countriesForContinent(continent) {
+  if (continent === "world") return data.countries;
+  return data.countries.filter((country) => COUNTRY_CONTINENTS[country.id] === continent);
 }
 
 function renderMap() {
@@ -107,6 +333,7 @@ function renderMap() {
 }
 
 function updateScores() {
+  document.querySelector("#completedCount").textContent = `${completedIds.size} / ${activeCountries.length}`;
   document.querySelector("#correctCount").textContent = score.correct;
   document.querySelector("#wrongCount").textContent = score.wrong;
   document.querySelector("#skippedCount").textContent = score.skipped;
@@ -119,6 +346,10 @@ function setFeedback(message, type = "") {
 }
 
 function setCurrent(country) {
+  if (!country) {
+    finishSelectedContinent();
+    return;
+  }
   current = country;
   clearTimeout(advanceTimer);
   waitingForNext = false;
@@ -129,8 +360,10 @@ function setCurrent(country) {
   nextButton.hidden = true;
 
   pathById.forEach((path) => {
+    const isInSelectedSet = activeCountries.some((item) => item.id === path.dataset.id);
+    path.classList.toggle("outside-region", !isInSelectedSet);
     path.classList.toggle("active", path.dataset.id === country.id);
-    path.classList.toggle("dimmed", path.dataset.id !== country.id);
+    path.classList.toggle("dimmed", isInSelectedSet && path.dataset.id !== country.id);
   });
 
   const activePath = pathById.get(country.id);
@@ -142,14 +375,21 @@ function setCurrent(country) {
 
 function nextCountry() {
   if (queue.length === 0) {
-    queue = shuffle(data.countries);
-    setFeedback("Full pass complete. Countries reshuffled.");
+    const remaining = activeCountries.filter((country) => !completedIds.has(country.id));
+    if (remaining.length === 0) {
+      finishSelectedContinent();
+      return;
+    }
+    queue = shuffle(remaining);
+    setFeedback("Full pass complete. Remaining countries reshuffled.");
   }
   setCurrent(queue.pop());
 }
 
 function resetGame() {
-  queue = shuffle(data.countries);
+  selectedContinent = continentSelect.value || "world";
+  activeCountries = countriesForContinent(selectedContinent);
+  queue = shuffle(activeCountries);
   completedIds = new Set();
   score.correct = 0;
   score.wrong = 0;
@@ -159,7 +399,11 @@ function resetGame() {
   waitingForNext = false;
   nextButton.hidden = true;
   setAnswerControlsEnabled(true);
-  pathById.forEach((path) => path.classList.remove("completed", "active", "dimmed"));
+  pathById.forEach((path) => {
+    const isInSelectedSet = activeCountries.some((country) => country.id === path.dataset.id);
+    path.classList.toggle("outside-region", !isInSelectedSet);
+    path.classList.remove("completed", "active", "dimmed");
+  });
   updateScores();
   resetZoom();
   nextCountry();
@@ -167,6 +411,7 @@ function resetGame() {
 
 function startGame() {
   gameMode = document.querySelector('input[name="gameMode"]:checked')?.value || "label";
+  labelSize = labelSizeSelect.value || "small";
   gameStarted = true;
   modePanel.hidden = true;
   gameSurfaces.forEach((surface) => {
@@ -189,7 +434,7 @@ function backToMainMenu() {
   nextButton.hidden = true;
   setAnswerControlsEnabled(true);
   completedIds = new Set();
-  pathById.forEach((path) => path.classList.remove("completed", "active", "dimmed"));
+  pathById.forEach((path) => path.classList.remove("completed", "active", "dimmed", "outside-region"));
   resetZoom();
   gameSurfaces.forEach((surface) => {
     surface.hidden = true;
@@ -209,6 +454,10 @@ function checkGuess() {
     score.streak += 1;
     completeCountry(current);
     updateScores();
+    if (completedIds.size >= activeCountries.length) {
+      finishSelectedContinent();
+      return;
+    }
     setFeedback(`Correct: ${current.name}`, "good");
     waitForNext();
   } else {
@@ -244,25 +493,78 @@ function goToNextCountry() {
 }
 
 function completeCountry(country) {
-  if (gameMode !== "label" || completedIds.has(country.id)) return;
+  if (completedIds.has(country.id)) return;
   completedIds.add(country.id);
 
   const path = pathById.get(country.id);
   if (!path) return;
   path.classList.add("completed");
+  if (gameMode !== "label") return;
   addCountryLabel(country, path);
 }
 
 function addCountryLabel(country, path) {
+  if (labelSize === "off") return;
   const box = pathBounds(path);
+  const center = {
+    x: box.x + box.width / 2,
+    y: box.y + box.height / 2,
+  };
   const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  const fontSize = Math.max(5.8, Math.min(8.2, Math.sqrt(Math.max(box.width * box.height, 1)) / 10));
+  const isMobile = window.matchMedia("(max-width: 700px)").matches;
+  const fontSize = labelSize === "medium" ? (isMobile ? 8 : 11) : isMobile ? 7 : 9;
+  const labelText = labelName(country, box);
+  const useLeader = shouldUseLeaderLabel(country, box);
+  const labelPoint = useLeader ? leaderLabelPoint(center, fontSize) : center;
+
   label.setAttribute("class", "country-label");
-  label.setAttribute("x", box.x + box.width / 2);
-  label.setAttribute("y", box.y + box.height / 2);
+  label.setAttribute("x", labelPoint.x.toFixed(1));
+  label.setAttribute("y", labelPoint.y.toFixed(1));
   label.setAttribute("font-size", fontSize.toFixed(1));
-  label.textContent = country.name;
+  label.textContent = labelText;
+
+  if (useLeader) {
+    const leader = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    leader.setAttribute("class", "country-label-leader");
+    leader.setAttribute("x1", center.x.toFixed(1));
+    leader.setAttribute("y1", center.y.toFixed(1));
+    leader.setAttribute("x2", labelPoint.x.toFixed(1));
+    leader.setAttribute("y2", labelPoint.y.toFixed(1));
+    labelLayer.append(leader);
+  }
+
   labelLayer.append(label);
+}
+
+function labelName(country, box) {
+  if (LABEL_ABBREVIATIONS[country.id]) return LABEL_ABBREVIATIONS[country.id];
+  if (country.name.length > 18 && box.width < 55) return country.abbrev || country.name;
+  return country.name;
+}
+
+function shouldUseLeaderLabel(country, box) {
+  return LEADER_LABEL_COUNTRIES.has(country.id) || box.width < 14 || box.height < 9 || box.width * box.height < 90;
+}
+
+function leaderLabelPoint(center, fontSize) {
+  const offsetX = center.x > data.width * 0.78 ? -fontSize * 3 : fontSize * 3;
+  const offsetY = center.y > data.height * 0.72 ? -fontSize * 1.5 : -fontSize * 1.2;
+  return {
+    x: Math.max(fontSize * 2, Math.min(data.width - fontSize * 2, center.x + offsetX)),
+    y: Math.max(fontSize * 2, Math.min(data.height - fontSize * 2, center.y + offsetY)),
+  };
+}
+
+function finishSelectedContinent() {
+  current = null;
+  clearTimeout(advanceTimer);
+  waitingForNext = true;
+  hintList.innerHTML = "";
+  nextButton.hidden = true;
+  setAnswerControlsEnabled(false);
+  const continentName = CONTINENT_NAMES[selectedContinent] || "World";
+  setFeedback(`Congratulations! You completed all countries in ${continentName}.`, "good");
+  updateScores();
 }
 
 function updateHints() {
@@ -271,7 +573,7 @@ function updateHints() {
   hintList.innerHTML = "";
   if (typed.length < 1) return;
 
-  const matches = data.countries
+  const matches = activeCountries
     .map((country) => country.name)
     .filter((name) => normalize(name).startsWith(typed))
     .slice(0, 8);
@@ -422,6 +724,10 @@ function zoomToCountry(country, animate = true) {
 
 function fitLayout() {
   const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
+  if (window.matchMedia("(max-width: 700px)").matches) {
+    appShell.style.setProperty("--map-height", `${Math.floor(viewportHeight * 0.52)}px`);
+    return;
+  }
   const shellStyles = getComputedStyle(appShell);
   const paddingY = parseFloat(shellStyles.paddingTop) + parseFloat(shellStyles.paddingBottom);
   const gap = parseFloat(shellStyles.rowGap || shellStyles.gap || 8);

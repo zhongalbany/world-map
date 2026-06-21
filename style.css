@@ -30,6 +30,7 @@ body {
   margin: 0;
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
   background:
     radial-gradient(circle at 15% 5%, rgba(239, 125, 67, 0.13), transparent 28rem),
     linear-gradient(180deg, #edf7f7 0%, var(--paper) 48%, #f3efe4 100%);
@@ -55,6 +56,7 @@ button {
 .app-shell {
   width: min(1180px, 100%);
   height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
     max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
@@ -95,7 +97,7 @@ h1 {
 .scoreboard {
   flex: 0 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -165,6 +167,34 @@ h1 {
   border-color: #173f49;
   color: #fff;
   font-weight: 850;
+}
+
+.continent-picker,
+.label-size-picker {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 6px;
+}
+
+.continent-picker span,
+.label-size-picker span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.continent-picker select,
+.label-size-picker select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #a8b8b4;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+  font: inherit;
 }
 
 [hidden] {
@@ -307,6 +337,10 @@ h1 {
   opacity: 0.66;
 }
 
+.country.outside-region {
+  display: none;
+}
+
 .country.completed {
   fill: rgba(186, 230, 190, 0.18);
   stroke: rgba(28, 94, 68, 0.72);
@@ -324,13 +358,22 @@ h1 {
 
 .country-label {
   fill: rgba(19, 39, 43, 0.78);
-  stroke: rgba(255, 253, 247, 0.9);
-  stroke-width: 2.6;
+  stroke: rgba(255, 253, 247, 0.82);
+  stroke-width: 1.6;
   paint-order: stroke;
-  font-size: 7.5px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 400;
+  opacity: 0.85;
   text-anchor: middle;
   dominant-baseline: central;
+  pointer-events: none;
+}
+
+.country-label-leader {
+  stroke: rgba(19, 39, 43, 0.58);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
 
@@ -470,7 +513,32 @@ button:focus-visible {
   pointer-events: none;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 700px) {
+  .app,
+  .app-shell {
+    height: 100dvh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    order: 1;
+  }
+
+  .map-panel {
+    order: 2;
+  }
+
+  .scoreboard {
+    order: 3;
+  }
+
+  .guess-panel {
+    order: 4;
+  }
+
   .mode-panel,
   .mode-options {
     grid-template-columns: 1fr;
@@ -482,23 +550,114 @@ button:focus-visible {
   }
 
   .scoreboard {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
   }
 
   .scoreboard div {
-    min-height: 48px;
+    min-height: 42px;
+    padding: 4px;
+  }
+
+  .scoreboard span {
+    font-size: 0.82rem;
+  }
+
+  .scoreboard small {
+    font-size: 0.52rem;
+  }
+
+  .country-label {
+    font-size: 7px;
+    stroke-width: 1.25;
+  }
+
+  .country-label-leader {
+    stroke-width: 0.5;
   }
 
   .map-panel {
+    flex: 0 0 52dvh;
+    width: 100%;
+    height: 52dvh;
+    min-height: 45dvh;
+    max-height: 60dvh;
+    align-self: stretch;
+    justify-self: auto;
+  }
+
+  .map-area {
+    flex: 0 0 52dvh;
+    height: 52dvh;
+    min-height: 45dvh;
+  }
+
+  .map-area svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .controls {
+    flex: 1 1 auto;
     min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .guess-panel {
+    padding: 6px;
+    gap: 5px;
+  }
+
+  .guess-panel label {
+    font-size: 0.66rem;
   }
 
   .input-row {
     grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  input,
+  button {
+    min-height: 40px;
   }
 
   #submitButton {
     width: 100%;
+  }
+
+  .hints {
+    min-height: 24px;
+    gap: 4px;
+  }
+
+  .hint {
+    min-height: 26px;
+    padding: 3px 8px;
+    font-size: 0.82rem;
+  }
+
+  .feedback,
+  .status-message {
+    min-height: 2em;
+    font-size: 0.86rem;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+
+  .actions button {
+    flex: 1 1 calc(50% - 6px);
+    min-height: 40px;
+    padding: 0 8px;
+    font-size: 0.9rem;
+  }
+
+  .secondary-action,
+  .actions #nextButton {
+    flex-basis: calc(50% - 6px);
   }
 }
 

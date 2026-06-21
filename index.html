@@ -39,10 +39,31 @@
             </span>
           </label>
         </div>
+        <label class="continent-picker" for="continentSelect">
+          <span>Continent Mode</span>
+          <select id="continentSelect" name="continent">
+            <option value="world">World (all countries)</option>
+            <option value="africa">Africa</option>
+            <option value="asia">Asia</option>
+            <option value="europe">Europe</option>
+            <option value="north-america">North America</option>
+            <option value="south-america">South America</option>
+            <option value="oceania">Oceania</option>
+          </select>
+        </label>
+        <label class="label-size-picker" for="labelSizeSelect">
+          <span>Show Labels</span>
+          <select id="labelSizeSelect" name="labelSize">
+            <option value="small" selected>Small</option>
+            <option value="medium">Medium</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
         <button id="startButton" type="button">Start Game</button>
       </section>
 
       <section class="scoreboard game-surface" aria-label="Score" hidden>
+        <div><span id="completedCount">0 / 0</span><small>Completed</small></div>
         <div><span id="correctCount">0</span><small>Correct</small></div>
         <div><span id="wrongCount">0</span><small>Wrong</small></div>
         <div><span id="skippedCount">0</span><small>Skipped</small></div>
