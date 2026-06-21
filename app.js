@@ -297,13 +297,21 @@ function renderMap() {
   map.setAttribute("viewBox", `${view.x} ${view.y} ${view.width} ${view.height}`);
   map.setAttribute("preserveAspectRatio", "xMidYMid meet");
   const terrain = document.createElementNS("http://www.w3.org/2000/svg", "image");
-  terrain.setAttribute("href", "./assets/terrain-world.png");
+  const terrainSource = "./assets/terrain-world.png";
+  terrain.addEventListener("load", () => {
+    console.log("terrain image loaded");
+  });
+  terrain.addEventListener("error", () => {
+    console.error(`terrain image failed to load: ${terrainSource}`);
+  });
+  terrain.setAttribute("href", terrainSource);
+  terrain.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", terrainSource);
   terrain.setAttribute("x", "0");
   terrain.setAttribute("y", "0");
   terrain.setAttribute("width", data.width);
   terrain.setAttribute("height", data.height);
   terrain.setAttribute("preserveAspectRatio", "xMidYMid meet");
-  terrain.setAttribute("class", "terrain-relief");
+  terrain.setAttribute("class", "terrain-layer terrain-relief");
   terrainLayer = terrain;
 
   const riverLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -723,7 +731,7 @@ function zoomToCountry(country, animate = true) {
 function fitLayout() {
   const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
   if (window.matchMedia("(max-width: 700px)").matches) {
-    appShell.style.setProperty("--map-height", `${Math.floor(viewportHeight * 0.7)}px`);
+    appShell.style.setProperty("--map-height", `${Math.floor(viewportHeight * 0.35)}px`);
     return;
   }
   const shellStyles = getComputedStyle(appShell);
