@@ -19,6 +19,7 @@ const startButton = document.querySelector("#startButton");
 const continentSelect = document.querySelector("#continentSelect");
 const labelSizeSelect = document.querySelector("#labelSizeSelect");
 const displayLanguageSelect = document.querySelector("#displayLanguageSelect");
+const includeTerritoriesInput = document.querySelector("#includeTerritoriesInput");
 const gameSurfaces = document.querySelectorAll(".game-surface");
 const appShell = document.querySelector(".app-shell");
 const mapPanel = document.querySelector(".map-panel");
@@ -264,6 +265,7 @@ let labelSize = "small";
 let languageMode = "en-zh";
 let selectedContinent = "world";
 let activeCountries = data.countries;
+let includeTerritories = false;
 let gameStarted = false;
 let completedIds = new Set();
 let gameState = "answering";
@@ -321,8 +323,9 @@ function restoreLanguageMode() {
 }
 
 function countriesForContinent(continent) {
-  if (continent === "world") return data.countries;
-  return data.countries.filter((country) => COUNTRY_CONTINENTS[country.id] === continent);
+  const pool = includeTerritories ? [...data.countries, ...(data.territories || [])] : data.countries;
+  if (continent === "world") return pool;
+  return pool.filter((country) => (country.continent || COUNTRY_CONTINENTS[country.id]) === continent);
 }
 
 function renderMap() {
@@ -361,7 +364,7 @@ function renderMap() {
   labelLayer.setAttribute("id", "labelLayer");
   map.append(terrain, riverLayer, countryLayer, labelLayer);
 
-  data.countries.forEach((country) => {
+  [...data.countries, ...(data.territories || [])].forEach((country) => {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", country.path);
     path.setAttribute("class", "country");
@@ -373,7 +376,8 @@ function renderMap() {
 }
 
 function updateScores() {
-  document.querySelector("#completedCount").textContent = `${completedIds.size} / ${activeCountries.length}`;
+  const remaining = Math.max(0, activeCountries.length - completedIds.size);
+  document.querySelector("#completedCount").textContent = `${remaining} / ${activeCountries.length}`;
   document.querySelector("#correctCount").textContent = score.correct;
   document.querySelector("#wrongCount").textContent = score.wrong;
   document.querySelector("#skippedCount").textContent = score.skipped;
@@ -428,6 +432,7 @@ function nextCountry() {
 
 function resetGame() {
   selectedContinent = continentSelect.value || "world";
+  includeTerritories = includeTerritoriesInput.checked;
   activeCountries = countriesForContinent(selectedContinent);
   queue = shuffle(activeCountries);
   completedIds = new Set();
@@ -605,7 +610,8 @@ function finishSelectedContinent(completedCountry = null) {
   setAnswerControlsEnabled(false);
   const continentName = CONTINENT_NAMES[selectedContinent] || "World";
   const completedAnswer = completedCountry ? `Correct!\n${formatCountryName(completedCountry)}\n\n` : "";
-  setFeedback(`${completedAnswer}Congratulations! You completed all countries in ${continentName}.`, "good");
+  const groupName = includeTerritories ? "countries and territories" : "countries";
+  setFeedback(`${completedAnswer}Congratulations! You completed all ${groupName} in ${continentName}.`, "good");
   updateScores();
 }
 

@@ -149,6 +149,35 @@ h1 {
   display: block;
 }
 
+.territory-option {
+  grid-column: 1 / -1;
+  min-height: 58px;
+  border: 1px solid #bdc8c2;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.territory-option input {
+  width: 20px;
+  min-height: 20px;
+  accent-color: #1d4f5c;
+}
+
+.territory-option strong,
+.territory-option small {
+  display: block;
+}
+
+.territory-option small {
+  margin-top: 2px;
+  color: var(--muted);
+}
+
 .mode-option strong {
   font-size: 0.96rem;
 }
