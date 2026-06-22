@@ -170,14 +170,16 @@ h1 {
 }
 
 .continent-picker,
-.label-size-picker {
+.label-size-picker,
+.display-language-picker {
   grid-column: 1 / -1;
   display: grid;
   gap: 6px;
 }
 
 .continent-picker span,
-.label-size-picker span {
+.label-size-picker span,
+.display-language-picker span {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 800;
@@ -186,7 +188,8 @@ h1 {
 }
 
 .continent-picker select,
-.label-size-picker select {
+.label-size-picker select,
+.display-language-picker select {
   width: 100%;
   min-height: 44px;
   border: 1px solid #a8b8b4;
@@ -455,6 +458,7 @@ button:focus-visible {
 }
 
 .feedback {
+  white-space: pre-line;
   min-height: 2.5em;
   line-height: 1.25;
   margin: 0;
