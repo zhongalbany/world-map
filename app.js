@@ -24,6 +24,7 @@ const appShell = document.querySelector(".app-shell");
 const mapPanel = document.querySelector(".map-panel");
 const scoreboard = document.querySelector(".scoreboard");
 const topbar = document.querySelector(".topbar");
+const LANGUAGE_STORAGE_KEY = "country-map-language-mode";
 
 const CONTINENT_NAMES = {
   world: "World",
@@ -206,177 +207,6 @@ const COUNTRY_CONTINENTS = {
   zimbabwe: "africa",
 };
 
-const COUNTRY_NAMES_ZH = {
-  afghanistan: "阿富汗",
-  albania: "阿尔巴尼亚",
-  algeria: "阿尔及利亚",
-  angola: "安哥拉",
-  argentina: "阿根廷",
-  armenia: "亚美尼亚",
-  australia: "澳大利亚",
-  austria: "奥地利",
-  azerbaijan: "阿塞拜疆",
-  bangladesh: "孟加拉国",
-  belarus: "白俄罗斯",
-  belgium: "比利时",
-  belize: "伯利兹",
-  benin: "贝宁",
-  bhutan: "不丹",
-  bolivia: "玻利维亚",
-  "bosnia-and-herzegovina": "波斯尼亚和黑塞哥维那",
-  botswana: "博茨瓦纳",
-  brazil: "巴西",
-  brunei: "文莱",
-  bulgaria: "保加利亚",
-  "burkina-faso": "布基纳法索",
-  burundi: "布隆迪",
-  cambodia: "柬埔寨",
-  cameroon: "喀麦隆",
-  canada: "加拿大",
-  "central-african-republic": "中非共和国",
-  chad: "乍得",
-  chile: "智利",
-  colombia: "哥伦比亚",
-  "costa-rica": "哥斯达黎加",
-  croatia: "克罗地亚",
-  cuba: "古巴",
-  cyprus: "塞浦路斯",
-  czechia: "捷克",
-  "democratic-republic-of-the-congo": "刚果民主共和国",
-  denmark: "丹麦",
-  djibouti: "吉布提",
-  "dominican-republic": "多米尼加共和国",
-  "east-timor": "东帝汶",
-  ecuador: "厄瓜多尔",
-  egypt: "埃及",
-  "el-salvador": "萨尔瓦多",
-  "equatorial-guinea": "赤道几内亚",
-  eritrea: "厄立特里亚",
-  estonia: "爱沙尼亚",
-  eswatini: "斯威士兰",
-  ethiopia: "埃塞俄比亚",
-  fiji: "斐济",
-  finland: "芬兰",
-  france: "法国",
-  gabon: "加蓬",
-  georgia: "格鲁吉亚",
-  germany: "德国",
-  ghana: "加纳",
-  greece: "希腊",
-  greenland: "格陵兰",
-  guatemala: "危地马拉",
-  guinea: "几内亚",
-  "guinea-bissau": "几内亚比绍",
-  guyana: "圭亚那",
-  haiti: "海地",
-  honduras: "洪都拉斯",
-  hungary: "匈牙利",
-  iceland: "冰岛",
-  india: "印度",
-  indonesia: "印度尼西亚",
-  iran: "伊朗",
-  iraq: "伊拉克",
-  ireland: "爱尔兰",
-  italy: "意大利",
-  "ivory-coast": "科特迪瓦",
-  jamaica: "牙买加",
-  japan: "日本",
-  jordan: "约旦",
-  kazakhstan: "哈萨克斯坦",
-  kenya: "肯尼亚",
-  kuwait: "科威特",
-  kyrgyzstan: "吉尔吉斯斯坦",
-  laos: "老挝",
-  latvia: "拉脱维亚",
-  lebanon: "黎巴嫩",
-  lesotho: "莱索托",
-  liberia: "利比里亚",
-  libya: "利比亚",
-  lithuania: "立陶宛",
-  luxembourg: "卢森堡",
-  madagascar: "马达加斯加",
-  malawi: "马拉维",
-  malaysia: "马来西亚",
-  mali: "马里",
-  mauritania: "毛里塔尼亚",
-  mexico: "墨西哥",
-  moldova: "摩尔多瓦",
-  mongolia: "蒙古",
-  montenegro: "黑山",
-  morocco: "摩洛哥",
-  mozambique: "莫桑比克",
-  myanmar: "缅甸",
-  namibia: "纳米比亚",
-  nepal: "尼泊尔",
-  netherlands: "荷兰",
-  "new-zealand": "新西兰",
-  nicaragua: "尼加拉瓜",
-  niger: "尼日尔",
-  nigeria: "尼日利亚",
-  "north-korea": "朝鲜",
-  "north-macedonia": "北马其顿",
-  norway: "挪威",
-  oman: "阿曼",
-  pakistan: "巴基斯坦",
-  panama: "巴拿马",
-  "papua-new-guinea": "巴布亚新几内亚",
-  paraguay: "巴拉圭",
-  "people-s-republic-of-china": "中国",
-  peru: "秘鲁",
-  philippines: "菲律宾",
-  poland: "波兰",
-  portugal: "葡萄牙",
-  qatar: "卡塔尔",
-  "republic-of-the-congo": "刚果共和国",
-  romania: "罗马尼亚",
-  russia: "俄罗斯",
-  rwanda: "卢旺达",
-  "saudi-arabia": "沙特阿拉伯",
-  senegal: "塞内加尔",
-  serbia: "塞尔维亚",
-  "sierra-leone": "塞拉利昂",
-  slovakia: "斯洛伐克",
-  slovenia: "斯洛文尼亚",
-  "solomon-islands": "所罗门群岛",
-  somalia: "索马里",
-  somaliland: "索马里兰",
-  "south-africa": "南非",
-  "south-korea": "韩国",
-  "south-sudan": "南苏丹",
-  spain: "西班牙",
-  "sri-lanka": "斯里兰卡",
-  sudan: "苏丹",
-  suriname: "苏里南",
-  sweden: "瑞典",
-  switzerland: "瑞士",
-  syria: "叙利亚",
-  taiwan: "台湾",
-  tajikistan: "塔吉克斯坦",
-  tanzania: "坦桑尼亚",
-  thailand: "泰国",
-  "the-bahamas": "巴哈马",
-  "the-gambia": "冈比亚",
-  togo: "多哥",
-  "trinidad-and-tobago": "特立尼达和多巴哥",
-  tunisia: "突尼斯",
-  turkey: "土耳其",
-  "turkish-republic-of-northern-cyprus": "北塞浦路斯土耳其共和国",
-  turkmenistan: "土库曼斯坦",
-  uganda: "乌干达",
-  ukraine: "乌克兰",
-  "united-arab-emirates": "阿拉伯联合酋长国",
-  "united-kingdom": "英国",
-  "united-states": "美国",
-  uruguay: "乌拉圭",
-  uzbekistan: "乌兹别克斯坦",
-  vanuatu: "瓦努阿图",
-  venezuela: "委内瑞拉",
-  vietnam: "越南",
-  yemen: "也门",
-  zambia: "赞比亚",
-  zimbabwe: "津巴布韦",
-};
-
 const LABEL_ABBREVIATIONS = {
   "bosnia-and-herzegovina": "Bosnia & Herz.",
   "central-african-republic": "Central African Rep.",
@@ -431,7 +261,7 @@ let advanceTimer = null;
 let viewAnimation = null;
 let gameMode = "label";
 let labelSize = "small";
-let displayLanguage = "bilingual";
+let languageMode = "en-zh";
 let selectedContinent = "world";
 let activeCountries = data.countries;
 let gameStarted = false;
@@ -461,10 +291,33 @@ function countryAnswers(country) {
   return new Set([country.name, ...country.aliases].map(normalize));
 }
 
-function displayCountryName(country) {
-  const chineseName = COUNTRY_NAMES_ZH[country.id];
-  if (displayLanguage !== "bilingual" || !chineseName) return country.name;
+function formatCountryName(country) {
+  const chineseName = country.chineseName;
+  if (languageMode === "en" || !chineseName) return country.name;
   return `${country.name} (${chineseName})`;
+}
+
+function setLanguageMode(mode, { save = true } = {}) {
+  languageMode = mode === "en" ? "en" : "en-zh";
+  displayLanguageSelect.value = languageMode;
+  console.log("Language mode:", languageMode);
+
+  if (!save) return;
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, languageMode);
+  } catch (error) {
+    console.warn("Language preference could not be saved.", error);
+  }
+}
+
+function restoreLanguageMode() {
+  let savedMode = "en-zh";
+  try {
+    savedMode = localStorage.getItem(LANGUAGE_STORAGE_KEY) || savedMode;
+  } catch (error) {
+    console.warn("Language preference could not be restored.", error);
+  }
+  setLanguageMode(savedMode, { save: false });
 }
 
 function countriesForContinent(continent) {
@@ -599,7 +452,7 @@ function resetGame() {
 function startGame() {
   gameMode = document.querySelector('input[name="gameMode"]:checked')?.value || "label";
   labelSize = labelSizeSelect.value || "small";
-  displayLanguage = displayLanguageSelect.value || "bilingual";
+  setLanguageMode(displayLanguageSelect.value);
   gameStarted = true;
   modePanel.hidden = true;
   gameSurfaces.forEach((surface) => {
@@ -643,10 +496,10 @@ function checkGuess() {
     completeCountry(current);
     updateScores();
     if (completedIds.size >= activeCountries.length) {
-      finishSelectedContinent();
+      finishSelectedContinent(current);
       return;
     }
-    setFeedback(`Correct!\n${displayCountryName(current)}`, "good");
+    setFeedback(`Correct!\n${formatCountryName(current)}`, "good");
     waitForNext();
   } else {
     score.wrong += 1;
@@ -742,7 +595,7 @@ function leaderLabelPoint(center, fontSize) {
   };
 }
 
-function finishSelectedContinent() {
+function finishSelectedContinent(completedCountry = null) {
   current = null;
   clearTimeout(advanceTimer);
   waitingForNext = true;
@@ -750,7 +603,8 @@ function finishSelectedContinent() {
   nextButton.hidden = true;
   setAnswerControlsEnabled(false);
   const continentName = CONTINENT_NAMES[selectedContinent] || "World";
-  setFeedback(`Congratulations! You completed all countries in ${continentName}.`, "good");
+  const completedAnswer = completedCountry ? `Correct!\n${formatCountryName(completedCountry)}\n\n` : "";
+  setFeedback(`${completedAnswer}Congratulations! You completed all countries in ${continentName}.`, "good");
   updateScores();
 }
 
@@ -768,7 +622,7 @@ function updateHints() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "hint";
-    button.textContent = displayCountryName(country);
+    button.textContent = formatCountryName(country);
     button.setAttribute("role", "option");
     button.addEventListener("click", () => {
       guessInput.value = country.name;
@@ -783,7 +637,7 @@ function skipCountry() {
   score.skipped += 1;
   score.streak = 0;
   updateScores();
-  setFeedback(`Skipped: ${current.name}`, "bad");
+  setFeedback(`Skipped: ${formatCountryName(current)}`, "bad");
   clearTimeout(advanceTimer);
   advanceTimer = setTimeout(nextCountry, 750);
 }
@@ -794,7 +648,7 @@ function revealCountry() {
   score.streak = 0;
   updateScores();
   guessInput.value = current.name;
-  setFeedback(`Answer:\n${displayCountryName(current)}`, "bad");
+  setFeedback(`Answer:\n${formatCountryName(current)}`, "bad");
   waitForNext();
 }
 
@@ -949,6 +803,9 @@ guessForm.addEventListener("submit", (event) => {
   checkGuess();
 });
 
+displayLanguageSelect.addEventListener("change", () => {
+  setLanguageMode(displayLanguageSelect.value);
+});
 startButton.addEventListener("click", startGame);
 backButton.addEventListener("click", backToMainMenu);
 skipButton.addEventListener("click", skipCountry);
@@ -997,6 +854,7 @@ map.addEventListener(
   { passive: false },
 );
 
+restoreLanguageMode();
 renderMap();
 newRoundButton.disabled = true;
 fitLayout();
