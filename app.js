@@ -266,7 +266,7 @@ let selectedContinent = "world";
 let activeCountries = data.countries;
 let gameStarted = false;
 let completedIds = new Set();
-let waitingForNext = false;
+let gameState = "answering";
 
 function normalize(value) {
   return value
@@ -392,7 +392,7 @@ function setCurrent(country) {
   }
   current = country;
   clearTimeout(advanceTimer);
-  waitingForNext = false;
+  gameState = "answering";
   guessInput.value = "";
   hintList.innerHTML = "";
   guessForm.scrollTop = 0;
@@ -436,7 +436,7 @@ function resetGame() {
   score.skipped = 0;
   score.streak = 0;
   labelLayer.innerHTML = "";
-  waitingForNext = false;
+  gameState = "answering";
   nextButton.hidden = true;
   setAnswerControlsEnabled(true);
   pathById.forEach((path) => {
@@ -468,7 +468,7 @@ function backToMainMenu() {
   clearTimeout(advanceTimer);
   gameStarted = false;
   current = null;
-  waitingForNext = false;
+  gameState = "answering";
   guessInput.value = "";
   hintList.innerHTML = "";
   labelLayer.innerHTML = "";
@@ -486,7 +486,7 @@ function backToMainMenu() {
 }
 
 function checkGuess() {
-  if (waitingForNext) return;
+  if (gameState !== "answering") return;
   const typed = normalize(guessInput.value);
   if (!typed || !current) return;
 
@@ -505,13 +505,14 @@ function checkGuess() {
     score.wrong += 1;
     score.streak = 0;
     updateScores();
-    setFeedback("Not quite. Try another name or alias.", "bad");
+    setFeedback(`Incorrect!\nCorrect answer:\n${formatCountryName(current)}`, "bad");
+    waitForNext();
   }
 }
 
 function waitForNext() {
   clearTimeout(advanceTimer);
-  waitingForNext = true;
+  gameState = "showingResult";
   hintList.innerHTML = "";
   setAnswerControlsEnabled(false);
   nextButton.hidden = false;
@@ -525,8 +526,8 @@ function setAnswerControlsEnabled(enabled) {
 }
 
 function goToNextCountry() {
-  if (!waitingForNext) return;
-  waitingForNext = false;
+  if (gameState !== "showingResult") return;
+  gameState = "answering";
   nextButton.hidden = true;
   setAnswerControlsEnabled(true);
   nextCountry();
@@ -598,7 +599,7 @@ function leaderLabelPoint(center, fontSize) {
 function finishSelectedContinent(completedCountry = null) {
   current = null;
   clearTimeout(advanceTimer);
-  waitingForNext = true;
+  gameState = "complete";
   hintList.innerHTML = "";
   nextButton.hidden = true;
   setAnswerControlsEnabled(false);
@@ -609,7 +610,7 @@ function finishSelectedContinent(completedCountry = null) {
 }
 
 function updateHints() {
-  if (waitingForNext) return;
+  if (gameState !== "answering") return;
   const typed = normalize(guessInput.value);
   hintList.innerHTML = "";
   if (typed.length < 1) return;
@@ -633,7 +634,7 @@ function updateHints() {
 }
 
 function skipCountry() {
-  if (waitingForNext) return;
+  if (gameState !== "answering") return;
   score.skipped += 1;
   score.streak = 0;
   updateScores();
@@ -643,7 +644,7 @@ function skipCountry() {
 }
 
 function revealCountry() {
-  if (waitingForNext) return;
+  if (gameState !== "answering") return;
   score.wrong += 1;
   score.streak = 0;
   updateScores();
@@ -792,15 +793,24 @@ guessInput.addEventListener("input", () => {
   updateHints();
 });
 
-guessInput.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" || event.isComposing) return;
+guessForm.addEventListener("submit", (event) => {
   event.preventDefault();
   checkGuess();
 });
 
-guessForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  checkGuess();
+document.addEventListener("keydown", (event) => {
+  if (!gameStarted || event.key !== "Enter" || event.isComposing) return;
+
+  if (gameState === "showingResult") {
+    event.preventDefault();
+    goToNextCountry();
+    return;
+  }
+
+  if (gameState === "answering" && event.target === guessInput) {
+    event.preventDefault();
+    checkGuess();
+  }
 });
 
 displayLanguageSelect.addEventListener("change", () => {
